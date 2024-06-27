@@ -54,12 +54,12 @@ namespace GarageConsole
 
         public IVehicle? FindVehicle(string registrationNumber)
         {
-            var vehicle = _garage.FindVehicle(registrationNumber);
-            if (vehicle != null)
-            {
-                return vehicle;
-            }
-            return default;
+            return _garage.FirstOrDefault(v => v.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase));
+            //if (vehicle != null)
+            //{
+            //    return vehicle;
+            //}
+            //return default;
         }
 
         public Dictionary<string, int> ListVehicleType()

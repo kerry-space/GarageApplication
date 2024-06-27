@@ -16,6 +16,8 @@ namespace GarageConsole
         private T[] _vehicles;
         private int _count;
 
+        public bool IsFull => _count >= _vehicles.Length;
+
         public Garage(int capacity)
         {
             _vehicles = new T[capacity];
@@ -26,11 +28,14 @@ namespace GarageConsole
         //park vehicle func
         public bool ParkVehicle(T vehicle)
         {
-            if (_count >= _vehicles.Length)
+            if (IsFull)
             {
                 return false;
             }
-            _vehicles[_count++] = vehicle;
+            var res = Array.IndexOf(_vehicles, null);
+            if(res != -1) _vehicles[res] = vehicle;
+            _count++;
+            //_vehicles[_count++] = vehicle;
             return true;
          }
 
@@ -41,10 +46,12 @@ namespace GarageConsole
             {
                 if (_vehicles[i].RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
                 {
-                    // Flytta sista fordonet till denna plats
-                    _vehicles[i] = _vehicles[--_count];
-                    // Sätt den sista platsen till standardvärdet
-                    _vehicles[_count] = default(T);
+                    _vehicles[i] = default(T)!;
+                    _count--;
+                    //// Flytta sista fordonet till denna plats
+                    //_vehicles[i] = _vehicles[--_count];
+                    //// Sätt den sista platsen till standardvärdet
+                    //_vehicles[_count] = default(T);
                     return true;
                 }
             }
@@ -54,14 +61,15 @@ namespace GarageConsole
         //Search for Vehicle in the garage
         public T? FindVehicle(string registrationNumber)
         {
-            foreach (T vehicle in this)
-            {
-                if (vehicle != null && vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
-                {
-                    return vehicle;
-                }
-            }
-            return default(T);
+            return _vehicles.FirstOrDefault(v => v != null && v.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase);
+            //foreach (T vehicle in this)
+            //{
+            //    if (vehicle != null && vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        return vehicle;
+            //    }
+            //}
+            //return default(T);
         }
 
         // make possible to to iterate over collection and return one by one element with yield return 
@@ -69,6 +77,7 @@ namespace GarageConsole
         {
             for (int i = 0; i < _count; i++)
             {
+                if (_vehicles[i] != null)
                 yield return _vehicles[i];
             }
         }
